@@ -1,203 +1,239 @@
-# 🎓 Moodle en Kubernetes - Guía Paso a Paso
+# � Moodle Telemedicina - Curso de Nivelación
 
-Este proyecto documenta el despliegue completo de Moodle en Google Kubernetes Engine (GKE) siguiendo la guía de [Carlos Rojas](https://medium.com/@carlos.rv125/moodle-en-kubernetes-gu%C3%ADa-paso-a-paso-68911c477f9d).
+## 📋 Descripción del Proyecto
 
-## 📋 Tabla de Contenidos
+Este repositorio contiene el **Curso Básico de Nivelación en Telemedicina** para el personal médico, desplegado en Google Cloud Platform usando Kubernetes (GKE).
 
-- [Prerrequisitos](#prerrequisitos)
-- [Configuración del Clúster](#configuración-del-clúster)
-- [Despliegue de Base de Datos](#despliegue-de-base-de-datos)
-- [Configuración de Almacenamiento](#configuración-de-almacenamiento)
-- [Despliegue de Moodle](#despliegue-de-moodle)
-- [Configuración de Ingress](#configuración-de-ingress)
-- [Pruebas y Acceso](#pruebas-y-acceso)
-- [Mantenimiento](#mantenimiento)
+## 🎯 Objetivo
 
-## ✅ Prerrequisitos Completados
+Fortalecer conocimientos en telemedicina y herramientas digitales para personal médico de:
+- 🏥 @telesalud.gob.sv
+- 🏛️ @goes.gob.sv
 
-### Herramientas Instaladas
-- [x] **kubectl** v1.29.2 - Cliente de línea de comandos para Kubernetes
-- [x] **Helm** v3.14.3 - Gestor de paquetes para Kubernetes
-- [x] **Google Cloud SDK** - Herramientas de línea de comandos para GCP
-- [x] **Docker** v26.1.1 - Para desarrollo local (opcional)
+## 📚 Estructura del Curso
 
-### Configuración de GCP
-- [x] **Cuenta de Google Cloud** configurada
-- [x] **Proyecto**: `moodle-gcp-test`
-- [x] **API de Kubernetes Engine** habilitada
-- [x] **Facturación** habilitada
+### Módulos del Curso
+```
+📚 Módulo A - Habilidades Tecnológicas (5 actividades)
+├── Bienvenida y normas
+├── Introducción a Chrome OS
+├── Configuración de Chromebook
+├── Google Chat y Meet
+└── Organización en Google Drive
 
-## 🚀 Configuración del Clúster
+📚 Módulo B - Buenas Prácticas Digitales (2 actividades)
+├── Portal de Práctica Médica
+└── Casos reales de inconvenientes
 
-### Clúster GKE Creado
-```bash
-# Comandos ejecutados:
-gcloud services enable container.googleapis.com --project=moodle-gcp-test
-gcloud config set project moodle-gcp-test
-gcloud container clusters create moodle-cluster --zone us-central1-c --num-nodes=2 --machine-type=e2-medium
-gcloud container clusters get-credentials moodle-cluster --zone us-central1-c
+📚 Módulo C - Aplicaciones Médicas (2 actividades)
+├── Descarga de App Dr. ISSS
+└── Navegación en la aplicación
+
+📚 Módulo D - Evaluación Final (2 actividades)
+├── Foro para consultas
+└── Evaluación integral
 ```
 
-### Especificaciones del Clúster
-- **Nombre**: `moodle-cluster`
-- **Zona**: `us-central1-c`
-- **Nodos**: 2 (e2-medium)
-- **Versión de Kubernetes**: 1.32.4-gke.1415000
-- **Estado**: RUNNING
+## 🏗️ Arquitectura Técnica
 
-### Verificación
+- **Plataforma**: Google Cloud Platform (GCP)
+- **Orquestación**: Google Kubernetes Engine (GKE)
+- **Base de datos**: MySQL/MariaDB
+- **Autenticación**: OAuth 2.0 con Google
+- **Dominio**: Restringido a organizaciones específicas
+
+## 🚀 Despliegue Rápido
+
+### Opción 1: Despliegue Automático (Recomendado)
 ```bash
-kubectl get nodes
-# Resultado: 2 nodos en estado Ready
+# En Google Cloud Shell
+chmod +x scripts/deploy_telemedicina_complete.sh
+./scripts/deploy_telemedicina_complete.sh
 ```
 
-## 🗄️ Base de Datos MySQL
-
-### MySQL Desplegado
+### Opción 2: Despliegue Manual
 ```bash
-# Comandos ejecutados:
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-kubectl create namespace moodle-db
-helm install moodle-mysql bitnami/mysql --namespace moodle-db --values values/mysql-moodle.yaml
+# Conectar al cluster
+gcloud container clusters get-credentials moodle-cluster --zone=us-central1-c --project=moodle-gcp-test
+
+# Ejecutar scripts paso a paso
+kubectl exec -it MOODLE_POD -- php /bitnami/moodle/scripts/setup_complete_telemedicina_course.php
 ```
 
-### Configuración de MySQL
-- **Namespace**: `moodle-db`
-- **Base de datos**: `moodle`
-- **Usuario**: `moodle_user`
-- **Contraseña**: `MoodleUser2025!`
-- **Root Password**: `Moodle2025!`
-- **Servicio**: `moodle-mysql.moodle-db.svc.cluster.local:3306`
-- **Almacenamiento**: 8Gi (persistente)
+## 📁 Estructura del Repositorio
 
-### Verificación de MySQL
-```bash
-kubectl get pods -n moodle-db
-# Resultado: moodle-mysql-0 en estado Running
-
-kubectl get services -n moodle-db
-# Resultado: moodle-mysql ClusterIP 3306
+```
+📦 moodle-telemedicina/
+├── 📁 scripts/                    # Scripts PHP y de despliegue
+│   ├── setup_complete_telemedicina_course.php
+│   ├── create_telemedicina_course_structure.php
+│   ├── add_detailed_content_telemedicina.php
+│   ├── setup_google_oauth_telesalud.php
+│   ├── enroll_users_telemedicina.php
+│   └── deploy_telemedicina_complete.sh
+├── � guides/                     # Guías de uso
+│   ├── GUIA_DEPLOYMENT_GCP_CLOUDSHELL.md
+│   └── COMANDOS_GCLOUD_TELEMEDICINA.md
+├── 📁 docs/                       # Documentación técnica
+│   ├── 01_instalacion_y_configuracion.md
+│   ├── 02_desarrollo_themes.md
+│   ├── 03_plugins_personalizados.md
+│   └── 04_apis_integraciones.md
+├── 📁 config/                     # Archivos de configuración
+│   └── example_config.php
+├── 📁 utils/                      # Utilidades y comandos
+│   └── useful_commands.sh
+└── 📄 README.md                   # Este archivo
 ```
 
-## 🎓 Moodle Desplegado
+## 🔧 Configuración Inicial
 
-### Moodle Funcionando
+### Prerrequisitos
+- [x] Cuenta de Google Cloud Platform
+- [x] Proyecto: `moodle-gcp-test`
+- [x] Cluster GKE: `moodle-cluster`
+- [x] Zona: `us-central1-c`
+- [x] Moodle desplegado y funcionando
+
+### Variables de Entorno
 ```bash
-# Comandos ejecutados:
-helm install moodle bitnami/moodle --namespace moodle --set mariadb.enabled=true --set mariadb.auth.rootPassword=Moodle2025! --set mariadb.auth.database=moodle --set mariadb.auth.username=moodle_user --set mariadb.auth.password=MoodleUser2025! --set service.type=LoadBalancer
+export PROJECT_ID="moodle-gcp-test"
+export CLUSTER_NAME="moodle-cluster"
+export ZONE="us-central1-c"
+export NAMESPACE="moodle"
 ```
 
-### Configuración de Moodle
-- **Namespace**: `moodle`
-- **URL de acceso**: http://34.72.133.6
-- **Usuario administrador**: `admin`
-- **Contraseña administrador**: `password`
-- **Base de datos**: MariaDB integrado
-- **Servicio**: LoadBalancer (IP externa asignada)
+## 🔐 Configuración OAuth
 
-### Verificación de Moodle
+### Dominios Permitidos
+- `telesalud.gob.sv`
+- `goes.gob.sv`
+
+### Configuración en Google Console
+1. Ir a: [Google Cloud Console](https://console.developers.google.com/)
+2. Seleccionar proyecto: `moodle-gcp-test`
+3. Crear credenciales OAuth 2.0
+4. URI de redirección: `http://34.72.133.6/admin/oauth2callback.php`
+
+## 🌐 Acceso al Curso
+
+### URLs Importantes
+- **Moodle Principal**: http://34.72.133.6
+- **Administración**: http://34.72.133.6/admin
+- **Curso de Telemedicina**: http://34.72.133.6/course/view.php?id={COURSE_ID}
+
+### Usuarios de Prueba
+- `doctor.lopez@telesalud.gob.sv`
+- `dra.martinez@goes.gob.sv`
+- `dr.rodriguez@telesalud.gob.sv`
+
+## 📊 Comandos Útiles
+
+### Verificación del Sistema
 ```bash
+# Verificar estado del cluster
 kubectl get pods -n moodle
-# Resultado: moodle-xxx Running, moodle-mariadb-0 Running
 
-kubectl get services -n moodle
-# Resultado: moodle LoadBalancer 34.72.133.6
+# Verificar curso usando utilidades
+./utils/useful_commands.sh verify_course
+
+# Ver logs
+./utils/useful_commands.sh view_logs
 ```
 
-### Acceso a Moodle
-- **URL**: http://34.72.133.6
-- **Credenciales**: admin / password
-- **Estado**: ✅ Funcionando correctamente
-
-## 🔄 Próximos Pasos (Pendientes)
-
-### 1. Despliegue de Base de Datos MySQL
-- [x] Crear namespace para la base de datos
-- [x] Desplegar MySQL usando Helm
-- [x] Configurar credenciales y base de datos
-- [x] Verificar conectividad
-
-### 2. Configuración de Almacenamiento
-- [x] Crear PersistentVolumeClaim para Moodle
-- [x] Configurar almacenamiento para archivos de Moodle
-- [x] Verificar permisos de acceso
-
-### 3. Despliegue de Moodle
-- [x] Agregar repositorio de Helm de Bitnami
-- [x] Configurar valores personalizados para Moodle
-- [x] Desplegar Moodle usando Helm
-- [x] Verificar el estado del despliegue
-
-### 4. Configuración de Ingress
-- [ ] Instalar controlador de Ingress (nginx-ingress)
-- [ ] Configurar Ingress para Moodle
-- [ ] Configurar certificados SSL (opcional)
-- [ ] Configurar dominio personalizado
-
-### 5. Pruebas y Acceso
-- [ ] Obtener IP externa del servicio
-- [ ] Acceder a Moodle desde el navegador
-- [ ] Configurar usuario administrador
-- [ ] Verificar funcionalidad básica
-
-## 📁 Estructura del Proyecto
-
-```
-moodle-gcp-test2/
-├── README.md                    # Este archivo
-├── helm/                        # Archivos de Helm descargados
-├── helm.zip                     # Archivo de Helm descargado
-├── k8s/                         # (Pendiente) Manifiestos de Kubernetes
-│   ├── mysql/                   # Configuración de MySQL
-│   ├── moodle/                  # Configuración de Moodle
-│   └── ingress/                 # Configuración de Ingress
-└── values/                      # (Pendiente) Archivos de valores de Helm
-    ├── mysql-values.yaml
-    └── moodle-values.yaml
-```
-
-## 🔧 Comandos Útiles
-
-### Verificar Estado del Clúster
+### Mantenimiento
 ```bash
-kubectl get nodes
-kubectl get pods --all-namespaces
-kubectl get services --all-namespaces
+# Backup de base de datos
+./utils/useful_commands.sh backup_db
+
+# Limpiar caché
+./utils/useful_commands.sh clear_cache
+
+# Ejecutar cron
+./utils/useful_commands.sh run_cron
 ```
 
-### Verificar Helm
-```bash
-helm list
-helm repo list
-```
+## 🔄 Flujo de Trabajo
 
-### Logs y Debugging
-```bash
-kubectl logs <pod-name> -n <namespace>
-kubectl describe pod <pod-name> -n <namespace>
-```
+### Desarrollo Local
+1. Modificar scripts en `scripts/`
+2. Probar en entorno local
+3. Subir cambios a GitHub
 
-## 📚 Referencias
+### Despliegue en GCP
+1. Conectar a Cloud Shell
+2. Clonar repositorio
+3. Ejecutar script de despliegue
+4. Verificar funcionamiento
 
-- [Guía Original](https://medium.com/@carlos.rv125/moodle-en-kubernetes-gu%C3%ADa-paso-a-paso-68911c477f9d)
-- [Documentación de GKE](https://cloud.google.com/kubernetes-engine/docs)
-- [Documentación de Helm](https://helm.sh/docs/)
-- [Documentación de Moodle](https://docs.moodle.org/)
+## 📈 Monitoreo y Análisis
 
-## 🚨 Notas Importantes
+### Métricas del Curso
+- Usuarios registrados por dominio
+- Progreso por módulo
+- Actividades completadas
+- Tiempo de finalización
 
-1. **Costos**: El clúster GKE genera costos por hora. Recuerda eliminarlo cuando no lo uses.
-2. **Seguridad**: Las credenciales por defecto deben cambiarse en producción.
-3. **Backup**: Configurar backups regulares de la base de datos.
-4. **Escalabilidad**: El clúster puede escalar según las necesidades.
+### Reportes Disponibles
+- Dashboard de progreso
+- Estadísticas de uso
+- Reportes de finalización
+- Analíticas de participación
 
-## 📝 Estado Actual
+## � Troubleshooting
 
-**Fecha**: 7 de Julio, 2025  
-**Progreso**: 75% completado  
-**Próximo paso**: Configuración de Ingress y acceso externo
+### Problemas Comunes
+1. **Error de conexión DB**: Verificar pods de MariaDB
+2. **OAuth no funciona**: Revisar credenciales en Google Console
+3. **Curso no accesible**: Verificar permisos y visibilidad
+
+### Contacto y Soporte
+Para problemas técnicos:
+- Revisar logs del pod
+- Verificar configuración OAuth
+- Consultar documentación en `guides/`
+
+## 🔒 Seguridad
+
+### Medidas Implementadas
+- Restricción por dominio de email
+- Autenticación OAuth 2.0
+- Acceso progresivo a contenido
+- Logs de actividad
+
+### Consideraciones
+- Cambiar credenciales por defecto
+- Configurar backups regulares
+- Monitorear accesos no autorizados
+
+## 📝 Changelog
+
+### v1.0.0 (2025-01-07)
+- ✅ Curso básico de Telemedicina creado
+- ✅ OAuth configurado para dominios específicos
+- ✅ Scripts de despliegue automatizados
+- ✅ Documentación completa
+- ✅ Estructura de 4 módulos implementada
+
+## 🤝 Contribución
+
+### Cómo Contribuir
+1. Fork del repositorio
+2. Crear rama para feature
+3. Hacer cambios y pruebas
+4. Enviar pull request
+
+### Estándares de Código
+- Comentarios en español
+- Scripts bien documentados
+- Seguir convenciones de Moodle
+
+## � Licencia
+
+Este proyecto está bajo la licencia MIT. Ver archivo LICENSE para más detalles.
 
 ---
 
-*Este documento se actualiza automáticamente conforme avanzamos en el despliegue.* # repo-moodle-test
+**Desarrollado para el fortalecimiento de la Telemedicina en El Salvador** 🇸🇻
+
+*Última actualización: 2025-01-07*
